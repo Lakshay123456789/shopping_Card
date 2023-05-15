@@ -1,0 +1,70 @@
+﻿@model IEnumerable<shappingCardInMVC.Models.Product>
+
+@{
+    ViewBag.Title = "Product";
+}
+
+<h2>All Products</h2>
+@*@using (Html.BeginForm())
+{*@
+    <div class="row">
+        @foreach (var item in Model)
+        {
+        <div class="card w-25 m-4">
+            @*@Html.DisplayNameFor(model => model.ProductImage)*@
+            <img src="@item.ProductImage" />
+            <div class="card-body">
+                @*@Html.DisplayNameFor(model => model.Category.CategoryName)*@
+                @Html.DisplayFor(modelItem => item.Category.CategoryName)
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    @Html.DisplayNameFor(model => model.ProductName) :-
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </li>
+                <li class="list-group-item">
+                    @Html.DisplayNameFor(model => model.ProductPrice) :-
+                    @Html.DisplayFor(modelItem => item.ProductPrice)
+                </li>
+                <li class="list-group-item">
+                    @Html.DisplayNameFor(model => model.ProductDescription) :-
+                    @Html.DisplayFor(modelItem => item.ProductDescription)
+                </li>
+                <li class="list-group-item">
+                    @Html.DisplayNameFor(model => model.ProductQuantity) :-
+
+                    @Html.DisplayFor(modelItem => item.ProductQuantity)
+                </li>
+
+            </ul>
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                       
+                        <input type="submit" value="Add To Cart " class="btn btn-primary"  onclick="addToCard('@ViewBag.userId', '@item.ProductId', '@item.ProductName', '@item.ProductDescription', @item.ProductQuantity, @item.ProductPrice, '@item.ProductImage')" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+@*}*@
+<script>
+    function addToCard(userId, productId, productName, productDescription, productQuantity, productPrice, productImage) {
+       // console.log("add to");
+        var product = {
+            productId: productId,
+            productName: productName,
+            productDescription: productDescription,
+            productQuantity: productQuantity,
+            productPrice: productPrice,
+            productImage: productImage
+        };
+
+        var storedData = localStorage.getItem(userId);  
+        var myData = storedData ? JSON.parse(storedData) : []; 
+        myData.push(product);
+        localStorage.setItem(userId, JSON.stringify(myData));
+    }
+
+</script>

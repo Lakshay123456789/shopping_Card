@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @*@Styles.Render("~/Content/css")*@
+
+    @*@Scripts.Render("~/bundles/modernizr")*@
+   
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+    @*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+    <style>
+        img {
+            height: 100px;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            @Html.ActionLink("Shopping Card", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("Home", "Index", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+
+
+                        }
+                        else
+                        {
+                            <li>@Html.ActionLink("My Cart", "Cart", "Useres", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+
+                        <li>@Html.ActionLink("Category", "Index", "Common", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Log out", "Logout", "Authentication", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+
+
+    <div class="container body-content">
+
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+   @*@Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @RenderSection("scripts", required: false)*@
+
+
+
+
+
+<script>
+
+        $(document).ready(function () {
+            $("#myTable").DataTable();
+        });
+    function addToCard(userId, productId, productName, productDescription, productQuantity, productPrice, productImage) {
+        var product = {
+            productId: productId,
+            productName: productName,
+            productDescription: productDescription,
+            productQuantity: productQuantity,
+            productPrice: productPrice,
+            productImage: productImage
+        };
+
+        var storedData = localStorage.getItem(userId);
+        var myData = storedData ? JSON.parse(storedData) : [];
+
+        myData.push(product);
+        console.log("add to");
+        localStorage.setItem(userId, JSON.stringify(myData));
+    }
+
+
+    function addToCart(userId, productId, productName, productDescription, productQuantity, productPrice, productImage) {
+        var product = {
+            productId: productId,
+            productName: productName,
+            productDescription: productDescription,
+            productQuantity: productQuantity,
+            productPrice: productPrice,
+            productImage: productImage
+        };
+
+        var storedData = localStorage.getItem(userId);
+        var myData = storedData ? JSON.parse(storedData) : [];
+
+        myData.push(product);
+        console.log("Added to cart");
+        localStorage.setItem(userId, JSON.stringify(myData));
+    }
+
+    function CheckAllCart(userid) {
+        let store2 = JSON.parse(localStorage.getItem(userid));
+
+        let text = `<button type="button" class="btn btn-danger" onclick="emptyCart(${JSON.stringify(
+            userid
+        )})">Empty Cart</button>
+            <table class="table tbl-cart" id="tabledata">
+                <thead class="bg-primary">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Image</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="tablebody">`;
+
+        let grandtotal = 0;
+        for (let i = 0; i < store2.length; i++) {
+            let item = store2[i];
+            text += `<tr>
+                <td>${item.productName}</td>
+                <td>${item.productDescription}</td>
+                <td>${item.productPrice}</td>
+                <td><img src="${item.productImage}" alt="Product Image"></td>
+                <td>
+                    <button class="btn btn-success btn-sm"><i class="bi bi-file-minus"></i></button>
+                    ${item.productQuantity}
+                    <button class="btn btn-success btn-sm"><i class="bi bi-file-plus"></i></button>
+                </td>
+                <td>${item.productPrice * item.productQuantity}</td>
+            </tr>`;
+
+            grandtotal += item.productPrice * item.productQuantity;
+        }
+
+        text += `</tbody>
+            <tr id="clc">
+                <th colspan="5">Grand Total</th>
+                <th>${grandtotal}</th>
+            </tr>
+        </table>
+        <button type="button" class="btn btn-success" onclick="checkout(${JSON.stringify(userid)})">Checkout</button>`;
+
+        document.getElementById("hellodata").innerHTML = text;
+    }
+
+    function checkout(userid) {
+        console.log("Checking out");
+        let store2 = JSON.parse(localStorage.getItem(userid));
+        alert("Your order has been successfully placed");
+        localStorage.removeItem(userid);
+    }
+
+    function emptyCart(userid) {
+        alert("Your cart has been emptied successfully");
+        localStorage.removeItem(userid);
+    }
+
+
+</script>
+</body>
+        </html>

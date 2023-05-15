@@ -1,0 +1,89 @@
+﻿@model IEnumerable<shappingCardInMVC.Models.Product>
+
+@{
+    ViewBag.Title = "shopping website";
+}
+
+@*<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>*@
+    <h2>Index</h2>
+
+    <p>
+        @Html.ActionLink("Add New Product", "AddProduct", "Admin", new { @class = "btn btn btn-primary" })
+    </p>
+    <table class="Display" id="myTable">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category.CategoryName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductPrice)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductDescription)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductQuantity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductImage)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductDescription)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductQuantity)
+                    </td>
+                    <td>
+                        <img src="@item.ProductImage"  />
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "EditProduct", new { ProductId = item.ProductId }, new {@class= "btn btn btn-success" })
+                        @Html.ActionLink("Delete", "DeleteProduct", new { ProductId = item.ProductId }, new { @class = "btn btn-danger" }) 
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+        </table>
+    @*<script>
+
+        $(document).ready(function () {
+            $("#myTable").DataTable();
+        });   
+    </script>*@
+@*</body>
+</html>*@
